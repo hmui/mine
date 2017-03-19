@@ -1,0 +1,155 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>拖拽功能</title>
+	<link rel="stylesheet" href="reset.css">
+	<style>
+		.wrap {
+			position: relative;
+			width: 400px;
+			height: 100px;
+			margin: 0 auto;
+			border: 5px solid #666;
+			/*border-radius: 50%;*/
+		}
+		.ball {
+			position: absolute;
+			width: 50px;
+			height: 50px;
+			background: #099;
+			cursor: move;
+			/*border-radius: 50%;*/
+		}
+		.con-box {
+			overflow: hidden;
+			width: 400px;
+			height: 200px;
+			margin: 0 auto;
+			box-shadow: 0 0 0  5px #39f;
+		}
+		.con {
+			width: 800px;
+			height: 400px;
+			border: 1px solid #666;
+		}
+	</style>
+</head>
+<body>
+	<div class="wrap" id="box">
+		<div class="ball" id="ball"></div>
+	</div>
+	<div class="con-box" id="scrollBox">
+		<div class="con" id="con">块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动块随着鼠标的移动，在有限的区域内进行运动</div>
+	</div>
+	<!-- 
+	2、功能描述
+		鼠标按下左键时，小块随着鼠标的移动，在有限的区域内进行运动。当鼠标松开时，运动结束。
+	3、功能拆解
+		事件->鼠标按下 移动  松开
+		区域内->有临界条件
+		小块运动->改变left  top
+		随着鼠标移动->未知 
+	-->
+	<script>
+		var ball = document.getElementById('ball'),
+			box = document.getElementById('box'),
+			scrollBox = document.getElementById('scrollBox');
+
+		// document.documentElement.onclick = function (e) {
+		// 	// console.log(e.clientX);
+		// 	// console.log(e.clientY);
+		// 	var e = e || window.event;
+		// 	// alert(e.clientX);
+		// }
+		var oldX = 0,
+			newX = 0,
+			oldY = 0,
+			newY = 0;
+		
+		ball.onmousedown = function (e) {
+			var e = e || window.event;
+
+			// 阻止默认事件
+			if (window.event) {
+				window.event.returnValue = false;
+			} else {
+				e.preventDefault();
+			}
+
+			oldX = e.clientX;
+			oldY = e.clientY;
+			document.documentElement.onmousemove = function () {
+				var e = e || window.event;
+
+				// 阻止默认事件
+				if (window.event) {
+					window.event.returnValue = false;
+				} else {
+					e.preventDefault();
+				}
+
+				newX = e.clientX;
+				newY = e.clientY;
+				console.log(newX);
+				var endX = newX - oldX + ball.offsetLeft,
+					endY = newY - oldY + ball.offsetTop;
+					console.log('x'+newX);
+					console.log('y'+newY);
+					console.log('balloffsetLeft'+ball.offsetLeft);
+				if (endX <= 0) {
+					endX = 0;
+				};
+				if (endX >= box.clientWidth - ball.offsetWidth) {
+					endX = box.clientWidth - ball.offsetWidth;
+				};
+
+				if (endY <= 0) {
+					endY = 0;
+				};
+				if (endY >= box.clientHeight - ball.offsetHeight) {
+					endY = box.clientHeight - ball.offsetHeight;
+				};
+
+				ball.style.left = endX + 'px';
+				ball.style.top = endY + 'px';
+				// 比例计算
+				// 1、自定义滚动条
+				// 2、放大镜
+				// 3、吸顶
+				scrollBox.scrollLeft = endX / (box.clientWidth - ball.offsetWidth) * (scrollBox.scrollWidth - scrollBox.clientWidth);// scrollBox.scrollWidth = con.scrollWidth;
+				scrollBox.scrollTop = endY / (box.clientHeight - ball.offsetHeight) * (scrollBox.scrollHeight - scrollBox.clientHeight);
+				// 当前内容的scrollLeft值 = 小块距离父级左侧的长度 / 最大长度 * 可滚动的总距离；
+				// console.log(scrollBox.scrollWidth);
+				// console.log(scrollBox.scrollLeft);
+				oldX = newX;
+				oldY = newY;
+			}
+		}
+		document.documentElement.onmouseup = function () {
+			document.documentElement.onmousemove = null;
+			// 通过函数的赋值，可以让函数失效,函数是对象
+		}
+
+		// 针对函数的系统自带参数，存储了关于这个函数的各种信息。--e  evt  event
+		// 绑定在document上的方法是存在兼容的。IE  document.documentElement.onclick
+		// event-事件  FF（火狐）下 放置在了形参当中
+		// window.event  IE下 绑定在了Window上
+		// e.stopPropagation
+		// 
+		// offsetLeft  当前元素与父级（不包含父级边框）左侧的距离长度
+		// offsetTop   当前元素与父级（不包含父级边框）顶部的距离长度
+		// clientTop  等价于  边框高度
+		// clientLeft   等价于  边框宽度
+		// 
+		// 第二次点击left值（位置） = 第一次当时offsetLeft + （第二次clientX - 第一次clientX）
+		// 6、回归主流程	
+		// 核心1：每次移动之后，oldX会发生变化，需要重新赋值
+		// 核心2：运动条件：按下后再移动-> 函数关系	mousemove在mousedown中
+		// 注意：oldX  newX的变量是全局变量--当出现需要多个函数访问的变量时，需要考虑作用域问题。
+		// 7、调试
+		// 
+		// 
+	</script>
+</body>
+</html>

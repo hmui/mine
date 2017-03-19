@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>放大镜</title>
+	<link rel="stylesheet" href="reset.css">
+	<style>
+		.box {
+			position: relative;
+			float: left;
+			width: 400px;
+			height: 400px;
+			background: url('1.jpg') no-repeat;
+			background-size: cover;
+			box-shadow: inset 0 0 0 1px #666;
+		}
+		.ball {
+			position: absolute;
+			width: 160px;
+			height: 160px;
+			cursor: move;
+			z-index: 99;
+		}
+		.con-box {
+			overflow: hidden;
+			display: none;
+			float: left;
+			width: 400px;
+			height: 400px;
+		}
+		.con {
+			width: 1000px;
+			height: 1000px;
+			background: url('1.jpg') no-repeat;
+			background-size: cover;
+		}
+	</style>
+</head>
+<body>
+	<div class="wrap">
+		<div class="box" id="box">
+			<div class="ball" id="ball"></div>
+		</div>
+		<div class="con-box" id="conBox">
+			<div class="con" id="con"></div>
+		</div>
+	</div>
+	<script>
+		/*
+		 *功能：实现淘宝放大镜
+		 * 
+		 */
+		function Magnifier(boxId, boxEle, conId, conEle, maskPic, opacityVal) {
+			var _this = this;
+			this.ball = document.getElementById(boxEle);
+			this.box = document.getElementById(boxId);
+			this.conBox = document.getElementById(conId);
+			this.con = document.getElementById(conEle);
+			this.box.onmousemove = function () {
+				_this.mosMove(maskPic, opacityVal);
+			}
+			// function preventDefault (e) {
+			// 	var e = e || window.event;
+			// 	if (window.event) {
+			// 		window.event.returnValue = false;
+			// 	} else {
+			// 		e.prevertDefault();
+			// 	}
+			// }
+			
+			this.box.onmouseout = function() {
+				_this.mosOut();
+			}
+		}
+		Magnifier.prototype.mosMove = function(maskPic, opacityVal) {
+			this.newX = 0;
+			this.newY = 0;
+			this.conBox.style.display = 'block';
+			this.ball.style.display = 'block';
+			this.con.style.display = 'block';
+			// box.style.background = 'rgba(' + 255 +',' + 255 + ',' + 255 + ',' + 0.6 + ')';
+			this.ball.style.background = 'url(' + maskPic + ')';
+			this.ball.style.opacity = opacityVal;
+			var e = e || window.event;
+			// 阻止默认事件
+			if (window.event) {
+				window.event.returnValue = false;
+			} else {
+				e.preventDefault();
+			}
+			// preventDefault (e);
+			this.newX = e.clientX;
+			this.newY = e.clientY;
+			this.ballX = this.newX - this.box.offsetLeft - this.ball.offsetWidth / 2;
+			this.ballY = this.newY - this.box.offsetTop - this.ball.offsetHeight / 2;
+			if (this.ballX <= 0) {
+				this.ballX = 0;
+			};
+			if (this.ballX >= this.box.clientWidth - this.ball.offsetWidth) {
+				this.ballX = this.box.clientWidth - this.ball.offsetWidth;
+			};
+
+			if (this.ballY <= 0) {
+				this.ballY = 0;
+			};
+			if (this.ballY >= this.box.clientHeight - this.ball.offsetHeight) {
+				this.ballY = this.box.clientHeight - this.ball.offsetHeight;
+			};
+			this.conBox.scrollLeft = this.ballX / (this.box.clientWidth - this.ball.offsetWidth) * (this.conBox.scrollWidth - this.conBox.clientWidth);
+			this.conBox.scrollTop = this.ballY / (this.box.clientHeight - this.ball.offsetHeight) * (this.conBox.scrollHeight - this.conBox.clientHeight);
+			this.ball.style.left = this.ballX + 'px';
+			this.ball.style.top = this.ballY + 'px';
+		}
+		Magnifier.prototype.mosOut = function() {
+			this.ball.onmousemove = null;
+			this.conBox.style.display = 'none';
+			this.ball.style.display = 'none';
+			this.con.style.display = 'none';
+		}
+		new Magnifier('box', 'ball', 'conBox', 'con', 'magnifier.png', 0.2);
+	</script>
+</body>
+</html>
